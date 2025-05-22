@@ -79,6 +79,18 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// Update a group
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedGroup);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+
 
 
 
