@@ -7,19 +7,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --- Mongoose Model ---
+// Mongoose schema with imageUrl added
 const groupSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
   hobbies: [String],
+  imageUrl: String,
   createdAt: { type: Date, default: Date.now }
 });
 
 const Group = mongoose.model('Group', groupSchema);
 
-// --- Routes ---
-
-// Create a group
+// Create group
 app.post('/api/groups', async (req, res) => {
   try {
     const group = new Group(req.body);
@@ -40,7 +39,7 @@ app.get('/api/groups', async (req, res) => {
   }
 });
 
-// Get a group by ID
+// Get group by ID
 app.get('/api/groups/:id', async (req, res) => {
   try {
     const group = await Group.findById(req.params.id);
@@ -51,7 +50,7 @@ app.get('/api/groups/:id', async (req, res) => {
   }
 });
 
-// Update a group by ID
+// Update group by ID
 app.put('/api/groups/:id', async (req, res) => {
   try {
     const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -61,7 +60,7 @@ app.put('/api/groups/:id', async (req, res) => {
   }
 });
 
-// Delete a group
+// Delete group
 app.delete('/api/groups/:id', async (req, res) => {
   try {
     await Group.findByIdAndDelete(req.params.id);
@@ -71,18 +70,16 @@ app.delete('/api/groups/:id', async (req, res) => {
   }
 });
 
-
-
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URI;
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => {
-  console.log('MongoDB connected');
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  .then(() => {
+    console.log('MongoDB connected');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
   });
-})
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-});
