@@ -69,6 +69,27 @@ app.delete('/api/groups/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// POST /api/groups/join
+router.post('/groups/join', async (req, res) => {
+  const { userEmail, groupId } = req.body;
+
+  try {
+    const group = await Group.findById(groupId);
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    const existing = await UserGroup.findOne({ userEmail, groupId });
+    if (existing) {
+      return res.status(400).json({ message: 'Group already added' });
+    }
+
+    const userGroup = new UserGroup({ userEmail, groupId });
+    await userGroup.save();
+    res.status(201).json(userGroup);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 const PORT = process.env.PORT || 3000;
 const uri = process.env.MONGODB_URI;
