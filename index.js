@@ -137,6 +137,17 @@ app.put("/my-groups/:id", async (req, res) => {
     res.status(400).send({ success: false, message: "Invalid group ID" });
   }
 });
+// GET: All groups (all documents in myGroups collection)
+app.get("/all-groups", async (req, res) => {
+  try {
+    const result = await myGroupCollection.find().toArray();
+    res.send(result);
+  } catch (error) {
+    console.error("Failed to get all groups:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
+
 
 
     // Ping test
