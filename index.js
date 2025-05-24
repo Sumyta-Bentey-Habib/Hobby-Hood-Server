@@ -105,6 +105,39 @@ async function run() {
         return res.status(400).send({ success: false, message: "Invalid group ID" });
       }
     });
+    // PUT: Update a group by its unique _id and userEmail
+app.put("/my-groups/:id", async (req, res) => {
+  const id = req.params.id;
+  const userEmail = req.query.userEmail;
+  const updateData = req.body;
+
+  if (!userEmail) {
+    return res.status(400).send({ success: false, message: "User email required" });
+  }
+
+  if (!updateData || Object.keys(updateData).length === 0) {
+    return res.status(400).send({ success: false, message: "Update data required" });
+  }
+
+  try {
+    const objectId = new ObjectId(id);
+
+    const result = await myGroupCollection.updateOne(
+      { _id: objectId, userEmail },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).send({ success: false, message: "Group not found or not authorized" });
+    }
+
+    res.send({ success: true, message: "Group updated successfully" });
+  } catch (error) {
+    console.error("Invalid ObjectId format or update failed:", error);
+    res.status(400).send({ success: false, message: "Invalid group ID" });
+  }
+});
+
 
     // Ping test
     await client.db("admin").command({ ping: 1 });
