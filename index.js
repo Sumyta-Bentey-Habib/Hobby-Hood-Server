@@ -36,11 +36,19 @@ async function run() {
       res.send(result);
     });
 
-    // GET: All hobbies
-    app.get("/hobbies", async (req, res) => {
-      const result = await hobbyCollection.find().toArray();
-      res.send(result);
-    });
+app.get("/hobbies", async (req, res) => {
+  try {
+    const userEmail = req.query.userEmail;
+    const filter = userEmail ? { userEmail } : {};
+
+    const result = await hobbyCollection.find(filter).toArray();
+    res.send(result);
+  } catch (error) {
+    console.error("Failed to get hobbies:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+});
+
 
     // POST: Add to My Groups if not already added by the same user
     app.post("/my-groups", async (req, res) => {
@@ -151,7 +159,7 @@ app.get("/all-groups", async (req, res) => {
 
 
     // Ping test
-    await client.db("admin").command({ ping: 1 });
+    //await client.db("admin").command({ ping: 1 });
   } catch (error) {
     console.error("MongoDB connection error:", error);
   }
