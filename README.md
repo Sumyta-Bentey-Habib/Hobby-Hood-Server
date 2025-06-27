@@ -45,5 +45,5 @@
 1. Clone the repo:
 
 ```bash
-git clone <your-repository-url>
+git clone [(https://github.com/Sumyta-Bentey-Habib/Hobby-Hood-Server.git)]
 cd hobbyhood-server-site
